@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'content_analyser',
         'USER': 'postgres',
-        'PASSWORD': 'admin',
+        'PASSWORD': 'Postgres1234',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
@@ -119,7 +119,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
