@@ -21,6 +21,8 @@ class AnalysisJob(models.Model):
         default=StatusChoice.CONFIRMED,
         max_length=250
     )
+    url = models.CharField(max_length=250)
+    query = models.CharField(max_length=250)
 
 
 class AnalysisResult(models.Model):
