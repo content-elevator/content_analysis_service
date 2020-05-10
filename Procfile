@@ -1,0 +1,1 @@
+web: gunicorn content_rate.wsgi --log-file -
