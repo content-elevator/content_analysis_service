@@ -1,1 +1,1 @@
-web: gunicorn content_rate.wsgi --log-file -
+web: gunicorn content_analysis_service.wsgi --log-file -
