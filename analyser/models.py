@@ -64,15 +64,16 @@ def new_job_post_save(sender, instance, created, **kwargs):
         url = instance.url
         channel.basic_publish(exchange='',
                               routing_key='hello2',
-                              body='{"job_id":"'+id+'","query":"'+query+'","url":"'+url+'"}')
+                              body='{"job_id":'+str(id)+',"query":"'+str(query)+'","url":"'+str(url)+'"}')
 
-        print(" [x] Sent 'Hello World!'")
+        print(" [x] Sent "+'{"job_id":'+str(id)+',"query":"'+str(query)+'","url":"'+str(url)+'"}')
         connection.close()
         pass
 
 
 def scraping_result_post_save(sender, instance, created, **kwargs):
     if created:
+
         if instance.is_user_article:
             # generate word counts
             user_word_count = len(instance.content.split(" "))
