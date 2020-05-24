@@ -16,7 +16,6 @@ class AnalysisJob(models.Model):
         COMPLETED = "COMPLETED"
 
     user_id = models.IntegerField()
-    jwt_token = models.CharField(max_length=500)
     job_status = models.CharField(
         choices=StatusChoice.choices,
         default=StatusChoice.CONFIRMED,
