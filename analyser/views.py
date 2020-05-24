@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from analyser import serializers
 from analyser.model.models import Comparison
 from analyser.serializers import ComparisonSerializer, ScrapingResultSerializer, AnalysisJobSerializer, \
-    AnalysisResultSerializer, AnalysisJobCreateSerializer
+    AnalysisResultSerializer, AnalysisJobCreateSerializer, AnalysisJobUpdateSerializer
 
 from .models import AnalysisResult, AnalysisJob, ScrapingResult
 
@@ -108,14 +108,18 @@ class AnalysisJobViewSet(viewsets.ModelViewSet):
     queryset = AnalysisJob.objects.all()
     serializer_class = AnalysisJobSerializer
     create_serializer_class = AnalysisJobCreateSerializer
+    update_serializer_class = AnalysisJobUpdateSerializer
 
     def get_serializer_class(self):
         """
-        Determins which serializer to user `list` or `detail`
+        Determins which serializer to use
         """
         if self.action == 'create':
             if hasattr(self, 'create_serializer_class'):
                 return self.create_serializer_class
+        elif self.action == 'put' or self.action == 'partial_update':
+            if hasattr(self, 'update_serializer_class'):
+                return self.update_serializer_class
         return super().get_serializer_class()
 
 
