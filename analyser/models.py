@@ -49,7 +49,25 @@ class ScrapingResult(models.Model):
 
 def new_job_post_save(sender, instance, created, **kwargs):
     if created:
-        # post it to the mq
+        import pika, os
+
+        # Access the CLODUAMQP_URL environment variable and parse it (fallback to localhost)
+        # url = os.environ.get('CLOUDAMQP_URL', 'amqp://guest:guest@localhost:5672/%2f')
+        url = 'amqp://wezazbuz:28BUMuLXsp-3s_vT-nYhOEZf-8qoQXxG@eagle.rmq.cloudamqp.com/wezazbuz'
+        params = pika.URLParameters(url)
+        connection = pika.BlockingConnection(params)
+        channel = connection.channel()  # start a channel
+        channel.queue_declare(queue='hello2', durable=True)  # Declare a queue
+
+        id = instance.id
+        query = instance.query
+        url = instance.url
+        channel.basic_publish(exchange='',
+                              routing_key='hello2',
+                              body='{"job_id":"'+id+'","query":"'+query+'","url":"'+url+'"}')
+
+        print(" [x] Sent 'Hello World!'")
+        connection.close()
         pass
 
 
