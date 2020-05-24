@@ -67,7 +67,7 @@ def new_job_post_save(sender, instance, created, **kwargs):
                               body='{"job_id":'+str(id)+',"query":"'+str(query)+'","url":"'+str(url)+'"}')
 
         print(" [x] Sent "+'{"job_id":'+str(id)+',"query":"'+str(query)+'","url":"'+str(url)+'"}')
-        connection.close()
+        #connection.close()
         pass
 
 
