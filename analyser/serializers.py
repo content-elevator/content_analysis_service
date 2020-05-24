@@ -25,7 +25,7 @@ class ComparisonSerializer(serializers.Serializer):
 class ScrapingResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScrapingResult
-        fields = ('analysis_instance', 'is_user_article', 'title', 'content')
+        fields = ('analysis_instance', 'is_user_article', 'is_last_google_article', 'title', 'content')
 
 
 class TfIdfResultSerializer(serializers.ModelSerializer):
@@ -47,10 +47,10 @@ class AnalysisJobSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AnalysisJob
-        fields = ('id', 'user_id', 'job_status', 'url', 'query' ,'result')
+        fields = ('id', 'user_id', 'job_status', 'url', 'query', 'result')
+
 
 class AnalysisJobCreateSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = AnalysisJob
         fields = ('id', 'user_id', 'url', 'query')
