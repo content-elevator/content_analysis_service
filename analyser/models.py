@@ -53,7 +53,7 @@ def new_job_post_save(sender, instance, created, **kwargs):
 
         # Access the CLODUAMQP_URL environment variable and parse it (fallback to localhost)
         # url = os.environ.get('CLOUDAMQP_URL', 'amqp://guest:guest@localhost:5672/%2f')
-        url = 'amqp://wezazbuz:28BUMuLXsp-3s_vT-nYhOEZf-8qoQXxG@eagle.rmq.cloudamqp.com/wezazbuz'
+        url = 'amqp://zdblkbpl:LdADoprUeh9MViM85YcwsuIKYRhU6DJs@eagle.rmq.cloudamqp.com/zdblkbpl'
         params = pika.URLParameters(url)
         connection = pika.BlockingConnection(params)
         channel = connection.channel()  # start a channel
@@ -67,7 +67,7 @@ def new_job_post_save(sender, instance, created, **kwargs):
                               body='{"job_id":'+str(id)+',"query":"'+str(query)+'","url":"'+str(url)+'"}')
 
         print(" [x] Sent "+'{"job_id":'+str(id)+',"query":"'+str(query)+'","url":"'+str(url)+'"}')
-        #connection.close()
+        connection.close()
         pass
 
 
