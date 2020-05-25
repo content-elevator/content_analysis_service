@@ -69,7 +69,7 @@ def new_job_post_save(sender, instance, created, **kwargs):
 
         print(" [x] Sent "+'{"job_id":'+str(id)+',"query":"'+str(query)+'","url":"'+str(url)+'"}')
         connection.close()
-        current_job = instance.analysis_instance
+        current_job = instance
         current_job.job_status = AnalysisJob.StatusChoice.IN_QUEUE
         current_job.save()
         print("STATUS CHANGED TO: "+current_job.job_status)
