@@ -128,8 +128,7 @@ def scraping_result_post_save(sender, instance, created, **kwargs):
             current_job.job_status = AnalysisJob.StatusChoice.SAVING
             current_job.save()
             print("STATUS CHANGED TO: " + current_job.job_status)
-            import time
-            time.sleep(30)
+
             ## save stuff
 
             current_job.job_status = AnalysisJob.StatusChoice.COMPLETED
@@ -159,6 +158,7 @@ def get_word_counts(scraping_results):
             user_word_count += len(scraping_result.content.split(" "))
         else:
             google_word_count += len(scraping_result.content.split(" "))
+    google_word_count = google_word_count/(len(scraping_results)-1)
     return google_word_count, user_word_count
 
 
@@ -192,12 +192,10 @@ def generate_tf_idf(scraping_results):
     denselist = dense.tolist()
 
     df = pd.DataFrame(denselist, columns=feature_names_google)
-    print(df.head())
-    print("Mean: \n")
+
     mean_res = df.mask(df.eq(0)).mean()
     mean_res = mean_res.sort_values(ascending=False)
-    print(mean_res)
-    print(type(mean_res))
+
 
     df = mean_res.to_frame()
     df = df.head(50)
@@ -212,14 +210,11 @@ def generate_tf_idf(scraping_results):
 
     df = pd.DataFrame(dense, columns=feature_names_google)
 
-    print("Mean: \n")
     mean_res = df.mask(df.eq(0)).mean()
-    print(mean_res)
-    print(type(mean_res))
+
 
     df = mean_res.to_frame()
     df = df.loc[google_tfidf_terms, :]
-    print(df.head(50))
     # df = df.nlargest(50,[1])
     df.to_csv("result-request.csv")
 
