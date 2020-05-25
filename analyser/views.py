@@ -5,7 +5,11 @@ from rest_framework.response import Response
 
 from analyser import serializers
 from analyser.model.models import Comparison
-from analyser.serializers import ComparisonSerializer
+from analyser.serializers import ComparisonSerializer, ScrapingResultSerializer, AnalysisJobSerializer, \
+    AnalysisResultSerializer, AnalysisJobCreateSerializer, AnalysisJobUpdateSerializer
+
+from .models import AnalysisResult, AnalysisJob, ScrapingResult
+
 
 comparisons = {
     1: Comparison(source_article_url='url article', source_article_title='title article', source_article_content='content article'),
@@ -90,3 +94,35 @@ class ContentViewSet(viewsets.ViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class AnalysisResultViewSet(viewsets.ModelViewSet):
+
+    queryset = AnalysisResult.objects.all()
+    serializer_class = AnalysisResultSerializer
+
+
+
+
+
+class AnalysisJobViewSet(viewsets.ModelViewSet):
+    queryset = AnalysisJob.objects.all()
+    serializer_class = AnalysisJobSerializer
+    create_serializer_class = AnalysisJobCreateSerializer
+    update_serializer_class = AnalysisJobUpdateSerializer
+
+    def get_serializer_class(self):
+        """
+        Determins which serializer to use
+        """
+        if self.action == 'create':
+            if hasattr(self, 'create_serializer_class'):
+                return self.create_serializer_class
+        elif self.action == 'put' or self.action == 'partial_update':
+            if hasattr(self, 'update_serializer_class'):
+                return self.update_serializer_class
+        return super().get_serializer_class()
+
+
+class ScrapingResultViewSet(viewsets.ModelViewSet):
+    queryset = ScrapingResult.objects.all()
+    serializer_class = ScrapingResultSerializer
