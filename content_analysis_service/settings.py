@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'analyser'
 ]
 
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -106,6 +108,9 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+CORS_ORIGIN_WHITELIST = ('http://localhost:3000',)
+CORS_ALLOW_CREDENTIALS = True
 
 
 # Internationalization

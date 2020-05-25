@@ -24,6 +24,8 @@ class AnalysisJob(models.Model):
     url = models.CharField(max_length=250)
     query = models.CharField(max_length=250)
 
+    jwt_token = models.CharField(max_length=500, default=None, blank=True, null=True)
+    start_date = models.DateTimeField(auto_now_add=True,blank=True, null=True)
 
 class AnalysisResult(models.Model):
     word_count_user = models.IntegerField()
@@ -51,28 +53,30 @@ def new_job_post_save(sender, instance, created, **kwargs):
     if created:
         import pika, os
 
+        current_job = instance
+
         # Access the CLODUAMQP_URL environment variable and parse it (fallback to localhost)
         # url = os.environ.get('CLOUDAMQP_URL', 'amqp://guest:guest@localhost:5672/%2f')
         url = 'amqp://zdblkbpl:LdADoprUeh9MViM85YcwsuIKYRhU6DJs@eagle.rmq.cloudamqp.com/zdblkbpl'
         params = pika.URLParameters(url)
         connection = pika.BlockingConnection(params)
-        channel = connection.channel()  # start a channel
-        channel.queue_declare(queue='hello2', durable=True)  # Declare a queue
 
+        channel = connection.channel()  # start a channel
+        #channel.queue_declare(queue='hello2', durable=True)  # Declare a queue
 
         id = instance.id
         query = instance.query
         url = instance.url
-        channel.basic_publish(exchange='',
-                              routing_key='hello2',
-                              body='{"job_id":'+str(id)+',"query":"'+str(query)+'","url":"'+str(url)+'"}')
+        #channel.basic_publish(exchange='',
+        #                      routing_key='hello2',
+        #                      body='{"job_id":' + str(id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
 
-        print(" [x] Sent "+'{"job_id":'+str(id)+',"query":"'+str(query)+'","url":"'+str(url)+'"}')
+        print(" [x] Sent " + '{"job_id":' + str(id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
         connection.close()
-        current_job = instance
+
         current_job.job_status = AnalysisJob.StatusChoice.IN_QUEUE
         current_job.save()
-        print("STATUS CHANGED TO: "+current_job.job_status)
+        print("STATUS CHANGED TO: " + current_job.job_status)
         pass
 
 
@@ -135,7 +139,6 @@ def scraping_result_post_save(sender, instance, created, **kwargs):
             current_job.save()
             print("STATUS CHANGED TO: " + current_job.job_status)
 
-
             pass
 
         pass
@@ -158,7 +161,7 @@ def get_word_counts(scraping_results):
             user_word_count += len(scraping_result.content.split(" "))
         else:
             google_word_count += len(scraping_result.content.split(" "))
-    google_word_count = google_word_count/(len(scraping_results)-1)
+    google_word_count = google_word_count / (len(scraping_results) - 1)
     return google_word_count, user_word_count
 
 
@@ -196,7 +199,6 @@ def generate_tf_idf(scraping_results):
     mean_res = df.mask(df.eq(0)).mean()
     mean_res = mean_res.sort_values(ascending=False)
 
-
     df = mean_res.to_frame()
     df = df.head(50)
     # df = df.nlargest(50,[1])
@@ -211,7 +213,6 @@ def generate_tf_idf(scraping_results):
     df = pd.DataFrame(dense, columns=feature_names_google)
 
     mean_res = df.mask(df.eq(0)).mean()
-
 
     df = mean_res.to_frame()
     df = df.loc[google_tfidf_terms, :]
