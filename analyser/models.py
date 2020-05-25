@@ -59,6 +59,7 @@ def new_job_post_save(sender, instance, created, **kwargs):
         channel = connection.channel()  # start a channel
         channel.queue_declare(queue='hello2', durable=True)  # Declare a queue
 
+
         id = instance.id
         query = instance.query
         url = instance.url
@@ -68,6 +69,10 @@ def new_job_post_save(sender, instance, created, **kwargs):
 
         print(" [x] Sent "+'{"job_id":'+str(id)+',"query":"'+str(query)+'","url":"'+str(url)+'"}')
         connection.close()
+        current_job = instance.analysis_instance
+        current_job.job_status = AnalysisJob.StatusChoice.IN_QUEUE
+        current_job.save()
+        print("STATUS CHANGED TO: "+current_job.job_status)
         pass
 
 
@@ -122,11 +127,16 @@ def scraping_result_post_save(sender, instance, created, **kwargs):
 
             current_job.job_status = AnalysisJob.StatusChoice.SAVING
             current_job.save()
-
+            print("STATUS CHANGED TO: " + current_job.job_status)
+            import time
+            time.sleep(30)
             ## save stuff
 
             current_job.job_status = AnalysisJob.StatusChoice.COMPLETED
             current_job.save()
+            print("STATUS CHANGED TO: " + current_job.job_status)
+
+
             pass
 
         pass
