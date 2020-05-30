@@ -62,14 +62,14 @@ def new_job_post_save(sender, instance, created, **kwargs):
         connection = pika.BlockingConnection(params)
 
         channel = connection.channel()  # start a channel
-        #channel.queue_declare(queue='hello2', durable=True)  # Declare a queue
+        channel.queue_declare(queue='hello2', durable=True)  # Declare a queue
 
         id = instance.id
         query = instance.query
         url = instance.url
-        #channel.basic_publish(exchange='',
-        #                      routing_key='hello2',
-        #                      body='{"job_id":' + str(id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
+        channel.basic_publish(exchange='',
+                              routing_key='hello2',
+                              body='{"job_id":' + str(id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
 
         print(" [x] Sent " + '{"job_id":' + str(id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
         connection.close()
