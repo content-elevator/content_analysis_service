@@ -47,7 +47,7 @@ class AnalysisJobSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AnalysisJob
-        fields = ('id', 'user_id', 'job_status', 'url', 'query', 'result')
+        fields = ('id', 'job_status', 'url', 'query', 'result')
 
 class AnalysisJobUpdateSerializer(serializers.ModelSerializer):
 
@@ -59,4 +59,4 @@ class AnalysisJobUpdateSerializer(serializers.ModelSerializer):
 class AnalysisJobCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnalysisJob
-        fields = ('id','user_id', 'url', 'query')
+        fields = ('id', 'url', 'query')

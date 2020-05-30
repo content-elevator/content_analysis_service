@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'analyser'
 ]
 
@@ -53,6 +54,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'analyser.interceptors.jwt_interceptor.JwtMiddleware',
+    'analyser.interceptors.jwt_interceptor.NewJobMiddleware'
 ]
 
 ROOT_URLCONF = 'content_analysis_service.urls'

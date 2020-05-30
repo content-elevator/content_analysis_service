@@ -1,5 +1,5 @@
 from django.db import models
-
+import requests
 # Create your models here.
 from django.db.models.signals import post_save
 
@@ -15,7 +15,7 @@ class AnalysisJob(models.Model):
         SAVING = "SAVING"
         COMPLETED = "COMPLETED"
 
-    user_id = models.IntegerField()
+    user_id = models.IntegerField(default=None, blank=True, null=True)
     job_status = models.CharField(
         choices=StatusChoice.choices,
         default=StatusChoice.CONFIRMED,
@@ -139,6 +139,9 @@ def scraping_result_post_save(sender, instance, created, **kwargs):
             current_job.save()
             print("STATUS CHANGED TO: " + current_job.job_status)
 
+            save_job_history(current_job)
+
+
             pass
 
         pass
@@ -146,6 +149,39 @@ def scraping_result_post_save(sender, instance, created, **kwargs):
 
 post_save.connect(new_job_post_save, sender=AnalysisJob)
 post_save.connect(scraping_result_post_save, sender=ScrapingResult)
+
+
+
+def save_job_history(job_instance):
+    # api-endpoint
+    URL = "https://analysis-history.gigalixirapp.com/v1/save"
+
+    data = {
+        "analysis_result": {
+            "user_id": job_instance.user_id,
+            "average_length": job_instance.result.google_word_count,
+            "length": job_instance.result.user_word_count,
+            "query": job_instance.query,
+            "url": job_instance.url,
+            "score": job_instance.result.tfidf_general_score
+        }
+    }
+
+    headers = {
+        "content-type":"application/json",
+        "Authorization": "Bearer "+job_instance.jwt_token
+    }
+
+    resp = requests.post(url=URL,data=data,headers=headers)
+    max_tries = 5
+    curent_tries =0
+    if resp.status_code != 201:
+        while resp.status_code!=201 and curent_tries<max_tries:
+            resp = requests.post(url=URL, data=data, headers=headers)
+            curent_tries+=1
+
+    if resp.status_code == 201:
+        AnalysisJob.objects.filter(id=job_instance.id).delete()
 
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
