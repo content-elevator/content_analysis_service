@@ -1,1 +1,3 @@
 /venv/
+#IDE metadata
+**.idea/**
