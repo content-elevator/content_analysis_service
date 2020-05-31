@@ -65,6 +65,35 @@ class NewJobMiddleware:
                 job.user_id = int(payload['sub'])
                 job.jwt_token = jwt_token
                 job.save()
+
+                import pika, os
+
+                
+
+                # Access the CLODUAMQP_URL environment variable and parse it (fallback to localhost)
+                # url = os.environ.get('CLOUDAMQP_URL', 'amqp://guest:guest@localhost:5672/%2f')
+                url = 'amqp://zdblkbpl:LdADoprUeh9MViM85YcwsuIKYRhU6DJs@eagle.rmq.cloudamqp.com/zdblkbpl'
+                params = pika.URLParameters(url)
+                connection = pika.BlockingConnection(params)
+
+                channel = connection.channel()  # start a channel
+                channel.queue_declare(queue='hello2', durable=True)  # Declare a queue
+
+                id = job.id
+                query = job.query
+                url = job.url
+                channel.basic_publish(exchange='',
+                                      routing_key='hello2',
+                                      body='{"jwt_token":' + str(job.jwt_token) + ',"job_id":' + str(
+                                          id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
+
+                print(" [x] Sent " + '{"jwt_token":' + str(job.jwt_token) + ',"job_id":' + str(
+                    id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
+                connection.close()
+
+                job.job_status = AnalysisJob.StatusChoice.IN_QUEUE
+                job.save()
+                print("STATUS CHANGED TO: " + job.job_status)
         # Code to be executed for each request/response after
         # the view is called.
 

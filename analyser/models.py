@@ -49,37 +49,10 @@ class ScrapingResult(models.Model):
     content = models.TextField()
 
 
-def new_job_post_save(sender, instance, created, **kwargs):
-    if created:
-        import pika, os
-
-        current_job = instance
-
-        # Access the CLODUAMQP_URL environment variable and parse it (fallback to localhost)
-        # url = os.environ.get('CLOUDAMQP_URL', 'amqp://guest:guest@localhost:5672/%2f')
-        url = 'amqp://zdblkbpl:LdADoprUeh9MViM85YcwsuIKYRhU6DJs@eagle.rmq.cloudamqp.com/zdblkbpl'
-        params = pika.URLParameters(url)
-        connection = pika.BlockingConnection(params)
-
-        channel = connection.channel()  # start a channel
-        channel.queue_declare(queue='hello2', durable=True)  # Declare a queue
-
-        id = instance.id
-        query = instance.query
-        url = instance.url
-        channel.basic_publish(exchange='',
-                              routing_key='hello2',
-                              body='{"jwt_token":'+str(current_job.jwt_token)+',"job_id":' + str(id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
-
-        print(" [x] Sent " + '{"jwt_token":'+str(current_job.jwt_token)+',"job_id":' + str(id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
-        connection.close()
-
-        current_job.job_status = AnalysisJob.StatusChoice.IN_QUEUE
-        current_job.save()
-        print("STATUS CHANGED TO: " + current_job.job_status)
 
 
-        pass
+
+
 
 
 def scraping_result_post_save(sender, instance, created, **kwargs):
@@ -149,7 +122,6 @@ def scraping_result_post_save(sender, instance, created, **kwargs):
         pass
 
 
-post_save.connect(new_job_post_save, sender=AnalysisJob)
 post_save.connect(scraping_result_post_save, sender=ScrapingResult)
 
 
