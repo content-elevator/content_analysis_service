@@ -84,10 +84,10 @@ class NewJobMiddleware:
                 url = job.url
                 channel.basic_publish(exchange='',
                                       routing_key='hello2',
-                                      body='{"jwt_token":' + str(job.jwt_token) + ',"job_id":' + str(
+                                      body='{"jwt_token":"' + str(job.jwt_token) + '","job_id":' + str(
                                           id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
 
-                print(" [x] Sent " + '{"jwt_token":' + str(job.jwt_token) + ',"job_id":' + str(
+                print(" [x] Sent " + '{"jwt_token":"' + str(job.jwt_token) + '","job_id":' + str(
                     id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
                 connection.close()
 
