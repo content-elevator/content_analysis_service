@@ -69,9 +69,9 @@ def new_job_post_save(sender, instance, created, **kwargs):
         url = instance.url
         channel.basic_publish(exchange='',
                               routing_key='hello2',
-                              body='{"job_id":' + str(id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
+                              body='{"jwt_token":'+str(current_job.jwt_token)+',"job_id":' + str(id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
 
-        print(" [x] Sent " + '{"job_id":' + str(id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
+        print(" [x] Sent " + '{"jwt_token":'+str(current_job.jwt_token)+',"job_id":' + str(id) + ',"query":"' + str(query) + '","url":"' + str(url) + '"}')
         connection.close()
 
         current_job.job_status = AnalysisJob.StatusChoice.IN_QUEUE
