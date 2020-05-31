@@ -39,8 +39,23 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'analyser'
+    'analyser',
+    'elasticapm.contrib.django'
 ]
+
+
+ELASTIC_APM = {
+  # Set required service name. Allowed characters:
+  # a-z, A-Z, 0-9, -, _, and space
+  'SERVICE_NAME': '',
+
+  # Use if APM Server requires a token
+  'SECRET_TOKEN': 'SiF6A4MsrSQwB3JwFc',
+
+  # Set custom APM Server URL (default: http://localhost:8200)
+  'SERVER_URL': 'https://6fb0c94a0dfb4366b8fe8e7f5f7e7993.apm.eu-central-1.aws.cloud.es.io:443',
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -53,7 +68,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'analyser.interceptors.jwt_interceptor.JwtMiddleware',
-    'analyser.interceptors.jwt_interceptor.NewJobMiddleware'
+    'analyser.interceptors.jwt_interceptor.NewJobMiddleware',
+    'elasticapm.contrib.django.middleware.TracingMiddleware',
 ]
 
 ROOT_URLCONF = 'content_analysis_service.urls'
