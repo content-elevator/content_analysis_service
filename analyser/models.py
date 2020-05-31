@@ -180,8 +180,8 @@ def save_job_history(job_instance):
             resp = requests.post(url=URL, data=data, headers=headers)
             curent_tries+=1
 
-    if resp.status_code == 201:
-        AnalysisJob.objects.filter(id=job_instance.id).delete()
+    #if resp.status_code == 201:
+        #AnalysisJob.objects.filter(id=job_instance.id).delete()
 
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
