@@ -128,7 +128,7 @@ post_save.connect(scraping_result_post_save, sender=ScrapingResult)
 
 def save_job_history(job_instance,result):
     # api-endpoint
-    URL = "https://analysis-history.gigalixirapp.com/v1/save"
+    URL = "https://analysis-history.gigalixirapp.com/history/v1/save"
 
     # data = {
     #     "analysis_result": {
@@ -153,8 +153,6 @@ def save_job_history(job_instance,result):
     }
     print("data:")
     print(data)
-    print("headers:")
-    print(headers)
     print("Saving job")
 
     resp = requests.post(url=URL,data=data,headers=headers)
