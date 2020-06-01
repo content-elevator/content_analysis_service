@@ -114,7 +114,7 @@ def scraping_result_post_save(sender, instance, created, **kwargs):
             current_job.save()
             print("STATUS CHANGED TO: " + current_job.job_status)
 
-            save_job_history(current_job)
+            save_job_history(current_job,result)
 
 
             pass
@@ -126,18 +126,18 @@ post_save.connect(scraping_result_post_save, sender=ScrapingResult)
 
 
 
-def save_job_history(job_instance):
+def save_job_history(job_instance,result):
     # api-endpoint
     URL = "https://analysis-history.gigalixirapp.com/v1/save"
 
     data = {
         "analysis_result": {
             "user_id": job_instance.user_id,
-            "average_length": job_instance.result.google_word_count,
-            "length": job_instance.result.user_word_count,
+            "average_length": result.word_count_google,
+            "length": result.word_count_user,
             "query": job_instance.query,
             "url": job_instance.url,
-            "score": job_instance.result.tfidf_general_score
+            "score": result.tfidf_general_score
         }
     }
 
