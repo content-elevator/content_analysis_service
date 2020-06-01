@@ -133,11 +133,11 @@ def save_job_history(job_instance,result):
     data = {
         "analysis_result": {
             "user_id": job_instance.user_id,
-            "average_length": result.word_count_google,
-            "length": result.word_count_user,
+            "average_length": int(result.word_count_google),
+            "length": int(result.word_count_user),
             "query": job_instance.query,
             "url": job_instance.url,
-            "score": result.tfidf_general_score
+            "score": int(result.tfidf_general_score)
         }
     }
 
