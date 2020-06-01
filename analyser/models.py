@@ -146,7 +146,10 @@ def save_job_history(job_instance,result):
     }
     print("data:")
     print(data)
+    print("headers:")
+    pre_process(headers)
     print("Saving job")
+
     resp = requests.post(url=URL,data=data,headers=headers)
     max_tries = 5
     curent_tries =0
