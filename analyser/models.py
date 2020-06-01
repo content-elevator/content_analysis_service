@@ -130,15 +130,22 @@ def save_job_history(job_instance,result):
     # api-endpoint
     URL = "https://analysis-history.gigalixirapp.com/v1/save"
 
-    data = {
-        "analysis_result": {
-            "average_length": int(result.word_count_google),
-            "length": int(result.word_count_user),
-            "query": job_instance.query,
-            "url": job_instance.url,
-            "score": int(result.tfidf_general_score*100)
-        }
-    }
+    # data = {
+    #     "analysis_result": {
+    #         "average_length": int(result.word_count_google),
+    #         "length": int(result.word_count_user),
+    #         "query": job_instance.query,
+    #         "url": job_instance.url,
+    #         "score": int(result.tfidf_general_score*100)
+    #     }
+    # }
+
+    data = '{"analysis_result": {' \
+           + '"average_length": '+str(int(result.word_count_google))+',' \
+           + '"length": '+str(int(result.word_count_user))+',' \
+           + '"query": "'+job_instance.query+'",' \
+           + '"url": "'+job_instance.url+'",' \
+           + ' "score": '+str(int(result.tfidf_general_score*100))+'}}'
 
     headers = {
         "content-type":"application/json",
@@ -147,7 +154,7 @@ def save_job_history(job_instance,result):
     print("data:")
     print(data)
     print("headers:")
-    pre_process(headers)
+    print(headers)
     print("Saving job")
 
     resp = requests.post(url=URL,data=data,headers=headers)
