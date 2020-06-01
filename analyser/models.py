@@ -145,16 +145,18 @@ def save_job_history(job_instance,result):
         "content-type":"application/json",
         "Authorization": "Bearer "+job_instance.jwt_token
     }
-
+    print("Saving job")
     resp = requests.post(url=URL,data=data,headers=headers)
     max_tries = 5
     curent_tries =0
     if resp.status_code != 201:
+        print("Something went wrong while saving")
         while resp.status_code!=201 and curent_tries<max_tries:
             resp = requests.post(url=URL, data=data, headers=headers)
             curent_tries+=1
 
-    #if resp.status_code == 201:
+    if resp.status_code == 201:
+        print("Save successful")
         #AnalysisJob.objects.filter(id=job_instance.id).delete()
 
 import re
