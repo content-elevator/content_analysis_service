@@ -132,7 +132,6 @@ def save_job_history(job_instance,result):
 
     data = {
         "analysis_result": {
-            "user_id": job_instance.user_id,
             "average_length": int(result.word_count_google),
             "length": int(result.word_count_user),
             "query": job_instance.query,
