@@ -137,7 +137,7 @@ def save_job_history(job_instance,result):
             "length": int(result.word_count_user),
             "query": job_instance.query,
             "url": job_instance.url,
-            "score": int(result.tfidf_general_score)
+            "score": int(result.tfidf_general_score*100)
         }
     }
 
