@@ -52,10 +52,16 @@ class NewJobMiddleware:
         # the view (and later middleware) are called.
         count = AnalysisJob.objects.all().count()
         if count > 150:
+            print("Total number of jobs: "+str(count))
             print("Cleaning up old jobs...")
             how_many_days = 1
-            AnalysisJob.objects.filter(start_date=now() - timedelta(days=how_many_days)).delete()
-            print("Old jobs cleaned.")
+            old_jobs = AnalysisJob.objects.filter(start_date=now() - timedelta(days=how_many_days))
+            print("Old jobs: "+old_jobs.count())
+            old_jobs.delete()
+            if AnalysisJob.objects.all().count()==count:
+                print("Old jobs not cleaned.")
+            else:
+                print("Old jobs cleaned.")
 
         ALLOWED_URLS = ['/jobs/']
 
