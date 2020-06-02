@@ -13,18 +13,19 @@ class JwtMiddleware:
     def __call__(self, request):
         # Code to be executed for each request before
         # the view (and later middleware) are called.
-        ALLOWED_URLS = ['/docs/', '/docs/schema.js','/admin']
+        if not request.path.startswith('/admin/'):
+            ALLOWED_URLS = ['/docs/', '/docs/schema.js','/admin']
 
-        if request.path not in ALLOWED_URLS:
-            if 'Authorization' in request.headers:
-                jwt_token = request.headers['Authorization'].split()[1]
-                try:
-                    self.authorize(jwt_token)
-                except:
+            if request.path not in ALLOWED_URLS:
+                if 'Authorization' in request.headers:
+                    jwt_token = request.headers['Authorization'].split()[1]
+                    try:
+                        self.authorize(jwt_token)
+                    except:
+                        return HttpResponse('Unauthorized', status=401)
+
+                else:
                     return HttpResponse('Unauthorized', status=401)
-
-            else:
-                return HttpResponse('Unauthorized', status=401)
 
         response = self.get_response(request)
 
