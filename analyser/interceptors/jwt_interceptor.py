@@ -50,18 +50,7 @@ class NewJobMiddleware:
     def __call__(self, request):
         # Code to be executed for each request before
         # the view (and later middleware) are called.
-        count = AnalysisJob.objects.all().count()
-        if count > 150:
-            print("Total number of jobs: "+str(count))
-            print("Cleaning up old jobs...")
-            how_many_days = 1
-            old_jobs = AnalysisJob.objects.filter(start_date=now() - timedelta(days=how_many_days))
-            print("Old jobs: "+str(old_jobs.count()))
-            old_jobs.delete()
-            if AnalysisJob.objects.all().count()==count:
-                print("Old jobs not cleaned.")
-            else:
-                print("Old jobs cleaned.")
+
 
         ALLOWED_URLS = ['/jobs/']
 
@@ -69,6 +58,18 @@ class NewJobMiddleware:
 
         response = self.get_response(request)
         if request.path in ALLOWED_URLS and request.method == 'POST':
+            count = AnalysisJob.objects.all().count()
+            if count > 150:
+                print("Total number of jobs: " + str(count))
+                print("Cleaning up old jobs...")
+                how_many_days = 3
+                old_jobs = AnalysisJob.objects.filter(start_date=(now() - timedelta(days=how_many_days)))
+                print("Old jobs: " + str(old_jobs.count()))
+                old_jobs.delete()
+                if AnalysisJob.objects.all().count() == count:
+                    print("Old jobs not cleaned.")
+                else:
+                    print("Old jobs cleaned.")
             jwt_token = request.headers['Authorization'].split()[1]
             payload = jwt.decode(jwt_token,
                        'vdsNJHUptbte5p55rYvsoKF+UiaZB/Se7ZwFDtox8ZR1kgh41hcl7rnbhubM6OR4',
