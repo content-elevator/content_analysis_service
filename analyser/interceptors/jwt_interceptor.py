@@ -63,7 +63,7 @@ class NewJobMiddleware:
                 print("Total number of jobs: " + str(count))
                 print("Cleaning up old jobs...")
                 how_many_days = 3
-                old_jobs = AnalysisJob.objects.filter(start_date=(now() - timedelta(days=how_many_days)))
+                old_jobs = AnalysisJob.objects.filter(start_date__lt=(now() - timedelta(days=how_many_days)))
                 print("Old jobs: " + str(old_jobs.count()))
                 old_jobs.delete()
                 if AnalysisJob.objects.all().count() == count:
