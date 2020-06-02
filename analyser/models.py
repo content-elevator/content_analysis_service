@@ -241,12 +241,11 @@ def generate_tf_idf(scraping_results):
     df = mean_res.to_frame()
     df = df.loc[google_tfidf_terms, :]
     # df = df.nlargest(50,[1])
-    df.to_csv("result-request.csv")
-
+    df = df.fillna(0)
     tfidf_score = df.values.tolist()
     tfidf_terms = df.index.values.tolist()
 
-    tfidf_score = map(lambda x: 0 if x[0] == 'nan' else x[0], tfidf_score)
+    tfidf_score = map(lambda x: x[0], tfidf_score)
     google_tfidf_score = map(lambda x: x[0], google_tfidf_score)
     # for score in tfidf_score:
 
