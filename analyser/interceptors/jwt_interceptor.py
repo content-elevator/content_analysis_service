@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 import jwt
-
+from datetime import datetime, timedelta
+from django.utils.timezone import now
 from analyser.models import AnalysisJob
 
 
@@ -12,7 +13,7 @@ class JwtMiddleware:
     def __call__(self, request):
         # Code to be executed for each request before
         # the view (and later middleware) are called.
-        ALLOWED_URLS = ['/docs/', '/docs/schema.js']
+        ALLOWED_URLS = ['/docs/', '/docs/schema.js','/admin']
 
         if request.path not in ALLOWED_URLS:
             if 'Authorization' in request.headers:
@@ -94,6 +95,13 @@ class NewJobMiddleware:
                 job.job_status = AnalysisJob.StatusChoice.IN_QUEUE
                 job.save()
                 print("STATUS CHANGED TO: " + job.job_status)
+                count = AnalysisJob.objects.all().count()
+                if count>150:
+                    print("Cleaning up old jobs...")
+                    how_many_days = 1
+                    AnalysisJob.objects.filter(entered__gte=now() - timedelta(days=how_many_days)).delete()
+
+
         # Code to be executed for each request/response after
         # the view is called.
 
