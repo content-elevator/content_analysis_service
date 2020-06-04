@@ -1,3 +1,5 @@
 /venv/
 #IDE metadata
 **.idea/**
+.idea/
+content_analysis_service.iml
