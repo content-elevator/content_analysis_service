@@ -4,11 +4,13 @@ version: 2.1
 
 orbs:
   heroku: circleci/heroku@0.0.10 # Invoke the Heroku orb
+  sonarcloud: sonarsource/sonarcloud@1.0.1
 
 workflows:
   heroku_deploy:
     jobs:
-      - build
+      - build:
+          context: SonarCloud
       - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
           requires:
             - build
@@ -43,3 +45,4 @@ jobs:
       - store_artifacts:
           path: test-reports/
           destination: python_app
+      - sonarcloud/scan
